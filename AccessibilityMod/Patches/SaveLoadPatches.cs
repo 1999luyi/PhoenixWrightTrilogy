@@ -128,6 +128,64 @@ namespace AccessibilityMod.Patches
             }
         }
 
+        // Hook save/load confirmation window to announce message
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(SaveConfirmationWindow), "OpenWindow")]
+        public static void SaveConfirmation_OpenWindow_Postfix(
+            SaveConfirmationWindow __instance,
+            bool is_confirmation
+        )
+        {
+            try
+            {
+                // Only announce if showing confirmation dialog (not direct save/load)
+                if (!is_confirmation)
+                    return;
+
+                string message = GetSaveConfirmationMessage(__instance);
+                if (!Net35Extensions.IsNullOrWhiteSpace(message))
+                {
+                    ClipboardManager.Announce(message, TextType.Menu);
+                }
+            }
+            catch (Exception ex)
+            {
+                AccessibilityMod.Core.AccessibilityMod.Logger?.Error(
+                    $"Error in SaveConfirmation OpenWindow patch: {ex.Message}"
+                );
+            }
+        }
+
+        private static string GetSaveConfirmationMessage(SaveConfirmationWindow instance)
+        {
+            try
+            {
+                // Get the window_ field
+                var windowField = typeof(SaveConfirmationWindow).GetField(
+                    "window_",
+                    BindingFlags.NonPublic | BindingFlags.Instance
+                );
+                if (windowField == null)
+                    return null;
+
+                var window = windowField.GetValue(instance);
+                if (window == null)
+                    return null;
+
+                // Get the confirmation_text_ field from the window
+                var textField = window.GetType().GetField("confirmation_text_");
+                if (textField == null)
+                    return null;
+
+                var textComponent = textField.GetValue(window) as Text;
+                return textComponent?.text;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
         // Hook cursor changes in save/load via UpdateCursorPosition
         [HarmonyPostfix]
         [HarmonyPatch(typeof(SaveLoadUICtrl), "UpdateCursorPosition")]

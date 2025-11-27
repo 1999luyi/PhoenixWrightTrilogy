@@ -30,6 +30,10 @@ namespace AccessibilityMod.Patches
         {
             try
             {
+                // Check if this is an optionCtrl confirmation dialog
+                if (TryAnnounceOptionCtrlConfirmation(__instance))
+                    return;
+
                 // Check if this is the main menu (from mainTitleCtrl)
                 var mainTitle = mainTitleCtrl.instance;
                 if (mainTitle == null)
@@ -60,6 +64,76 @@ namespace AccessibilityMod.Patches
                 AccessibilityMod.Core.AccessibilityMod.Logger?.Error(
                     $"Error in TitleSelectPlate_PlayCursor patch: {ex.Message}"
                 );
+            }
+        }
+
+        private static bool TryAnnounceOptionCtrlConfirmation(titleSelectPlate instance)
+        {
+            try
+            {
+                var optionInstance = optionCtrl.instance;
+                if (optionInstance == null || !optionInstance.is_open)
+                    return false;
+
+                // Check if this is the confirmation_select_ from optionCtrl
+                var confirmField = typeof(optionCtrl).GetField(
+                    "confirmation_select_",
+                    System.Reflection.BindingFlags.NonPublic
+                        | System.Reflection.BindingFlags.Instance
+                );
+                if (confirmField == null)
+                    return false;
+
+                var confirmSelect = confirmField.GetValue(optionInstance) as titleSelectPlate;
+                if (confirmSelect != instance)
+                    return false;
+
+                // This is a confirmation dialog - schedule delayed announcement
+                // The message is set AFTER playCursor() in some cases, so we need to wait
+                CoroutineRunner.Instance?.ScheduleDelayedAnnouncement(
+                    0.1f, // Small delay to let the message be set
+                    () => GetOptionCtrlConfirmationMessage(optionInstance),
+                    TextType.Menu
+                );
+                return true;
+            }
+            catch { }
+            return false;
+        }
+
+        private static string GetOptionCtrlConfirmationMessage(optionCtrl instance)
+        {
+            try
+            {
+                var field = typeof(optionCtrl).GetField(
+                    "title_back_text_",
+                    System.Reflection.BindingFlags.NonPublic
+                        | System.Reflection.BindingFlags.Instance
+                );
+                if (field == null)
+                    return null;
+
+                var textList = field.GetValue(instance) as List<UnityEngine.UI.Text>;
+                if (textList == null || textList.Count == 0)
+                    return null;
+
+                // Combine both lines of the message
+                string line1 = textList.Count > 0 ? textList[0]?.text : null;
+                string line2 = textList.Count > 1 ? textList[1]?.text : null;
+
+                string message = "";
+                if (!Core.Net35Extensions.IsNullOrWhiteSpace(line1))
+                    message = line1;
+                if (!Core.Net35Extensions.IsNullOrWhiteSpace(line2))
+                    message = Core.Net35Extensions.IsNullOrWhiteSpace(message)
+                        ? line2
+                        : message + " " + line2;
+
+                return message;
+            }
+            catch
+            {
+                return null;
             }
         }
 
