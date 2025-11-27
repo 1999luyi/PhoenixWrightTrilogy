@@ -48,12 +48,6 @@ namespace AccessibilityMod.Core
 
             // Initialize on first scene load when Unity is ready
             InitializeAccessibility();
-
-            // Announce scene changes
-            if (!string.IsNullOrEmpty(sceneName))
-            {
-                ClipboardManager.Announce($"Scene: {sceneName}", TextType.SystemMessage);
-            }
         }
 
         public override void OnUpdate()
@@ -110,8 +104,8 @@ namespace AccessibilityMod.Core
                 }
             }
 
-            // G - Announce life gauge (in trial)
-            if (Input.GetKeyDown(KeyCode.G) && AccessibilityState.IsInTrialMode())
+            // H - Announce life gauge (in trial)
+            if (Input.GetKeyDown(KeyCode.H) && AccessibilityState.IsInTrialMode())
             {
                 AccessibilityState.AnnounceLifeGauge();
             }
