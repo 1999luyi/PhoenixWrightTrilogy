@@ -117,6 +117,7 @@ namespace AccessibilityMod.Patches
     public static class MovePatches
     {
         private static int _lastMoveCursor = -1;
+        private static int _lastCursorNum = -1;
 
         [HarmonyPostfix]
         [HarmonyPatch(typeof(moveCtrl), "setting")]
@@ -125,6 +126,7 @@ namespace AccessibilityMod.Patches
             try
             {
                 _lastMoveCursor = in_cursor_no;
+                _lastCursorNum = in_num;
 
                 string locationName = GetLocationName(__instance, in_cursor_no);
                 string message = $"Move: {locationName} ({in_cursor_no + 1} of {in_num})";
@@ -133,6 +135,40 @@ namespace AccessibilityMod.Patches
             catch (Exception ex)
             {
                 AccessibilityMod.Core.AccessibilityMod.Logger?.Error($"Error in Move Setting patch: {ex.Message}");
+            }
+        }
+
+        // Hook cursor navigation to announce location changes
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(moveCtrl), "move_set_thumbnail_image")]
+        public static void MoveThumbnail_Postfix(moveCtrl __instance)
+        {
+            try
+            {
+                // Get cursor_no_ via reflection
+                var cursorNoField = typeof(moveCtrl).GetField("cursor_no_",
+                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+
+                if (cursorNoField == null)
+                    return;
+
+                int currentCursor = (int)cursorNoField.GetValue(__instance);
+
+                // Only announce if cursor changed (avoid duplicate from setting())
+                if (currentCursor != _lastMoveCursor)
+                {
+                    _lastMoveCursor = currentCursor;
+
+                    string locationName = GetLocationName(__instance, currentCursor);
+                    string message = _lastCursorNum > 1
+                        ? $"{locationName} ({currentCursor + 1} of {_lastCursorNum})"
+                        : locationName;
+                    ClipboardManager.Announce(message, TextType.Menu);
+                }
+            }
+            catch (Exception ex)
+            {
+                AccessibilityMod.Core.AccessibilityMod.Logger?.Error($"Error in Move Thumbnail patch: {ex.Message}");
             }
         }
 
