@@ -19,7 +19,8 @@ namespace AccessibilityMod.Patches
     [HarmonyPatch]
     public static class DialoguePatches
     {
-        private static string _lastAnnouncedText = "";
+        // Internal so CutscenePatches can check for duplicates
+        internal static string _lastAnnouncedText = "";
         private static int _lastSpeakerId = -1;
 
         // Regex for detecting button placeholders (multiple spaces or full-width spaces)
