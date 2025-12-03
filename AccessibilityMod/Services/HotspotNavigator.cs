@@ -10,7 +10,6 @@ namespace AccessibilityMod.Services
     {
         private static List<HotspotInfo> _hotspots = new List<HotspotInfo>();
         private static int _currentIndex = 0;
-        private static bool _isInitialized = false;
 
         public class HotspotInfo
         {
@@ -20,12 +19,6 @@ namespace AccessibilityMod.Services
             public float CenterY;
             public bool IsExamined;
             public string Description;
-        }
-
-        public static void Initialize()
-        {
-            _isInitialized = true;
-            AccessibilityMod.Core.AccessibilityMod.Logger?.Msg("HotspotNavigator initialized");
         }
 
         public static void RefreshHotspots()

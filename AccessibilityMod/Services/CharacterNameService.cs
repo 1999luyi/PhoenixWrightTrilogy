@@ -50,11 +50,13 @@ namespace AccessibilityMod.Services
             // Rise from the Ashes (episode 5)
             { 45, "Lana Skye" },
             { 44, "Ema Skye" },
-            { 47, "Jake Marshall" },
-            { 48, "Angel Starr" },
+            { 46, "Jake Marshall" },
+            { 47, "Mike Meekins" },
+            // { 48, "Angel Starr" },
             { 49, "Bruce Goodman" },
-            { 50, "Damon Gant" },
-            { 51, "Mike Meekins" },
+            { 50, "Angel Starr" },
+            { 52, "Police Officer" },
+            { 53, "Police Patrolman" },
         };
 
         // GS2 sprite index to character name mapping

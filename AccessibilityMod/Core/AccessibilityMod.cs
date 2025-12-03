@@ -30,9 +30,6 @@ namespace AccessibilityMod.Core
                 GameObject managerObject = new GameObject("AccessibilityMod_CoroutineRunner");
                 managerObject.AddComponent<CoroutineRunner>();
 
-                // Initialize the hotspot navigator for investigation mode
-                HotspotNavigator.Initialize();
-
                 Logger.Msg("Accessibility systems initialized successfully");
                 _isInitialized = true;
             }
@@ -82,13 +79,11 @@ namespace AccessibilityMod.Core
             // 3D evidence examination mode (GS1 Episode 5+)
             if (AccessibilityState.IsIn3DEvidenceMode())
             {
-                // [ - Previous hotspot
                 if (Input.GetKeyDown(KeyCode.LeftBracket))
                 {
                     Evidence3DNavigator.NavigatePrevious();
                 }
 
-                // ] - Next hotspot
                 if (Input.GetKeyDown(KeyCode.RightBracket))
                 {
                     Evidence3DNavigator.NavigateNext();
@@ -97,13 +92,11 @@ namespace AccessibilityMod.Core
             // Pointing mode navigation (court maps, etc.)
             else if (AccessibilityState.IsInPointingMode())
             {
-                // [ - Previous target area
                 if (Input.GetKeyDown(KeyCode.LeftBracket))
                 {
                     PointingNavigator.NavigatePrevious();
                 }
 
-                // ] - Next target area
                 if (Input.GetKeyDown(KeyCode.RightBracket))
                 {
                     PointingNavigator.NavigateNext();
@@ -118,13 +111,11 @@ namespace AccessibilityMod.Core
             // Investigation mode hotspot navigation
             else if (AccessibilityState.IsInInvestigationMode())
             {
-                // [ - Previous hotspot
                 if (Input.GetKeyDown(KeyCode.LeftBracket))
                 {
                     HotspotNavigator.NavigatePrevious();
                 }
 
-                // ] - Next hotspot
                 if (Input.GetKeyDown(KeyCode.RightBracket))
                 {
                     HotspotNavigator.NavigateNext();
