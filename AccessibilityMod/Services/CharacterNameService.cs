@@ -48,8 +48,9 @@ namespace AccessibilityMod.Services
             { 38, "Teacher" },
             { 39, "Miles Edgeworth" },
             // Rise from the Ashes (episode 5)
-            { 45, "Lana Skye" },
+            { 43, "Chief of Detectives" },
             { 44, "Ema Skye" },
+            { 45, "Lana Skye" },
             { 46, "Jake Marshall" },
             { 47, "Mike Meekins" },
             { 49, "Damon Gant" },

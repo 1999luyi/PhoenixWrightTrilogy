@@ -15,6 +15,7 @@ namespace AccessibilityMod.Services
         private static List<HotspotInfo> _hotspots = new List<HotspotInfo>();
         private static int _currentIndex = -1;
         private static bool _wasActive = false;
+        private static float _lastBgPosX = 0f;
 
         public class HotspotInfo
         {
@@ -23,6 +24,8 @@ namespace AccessibilityMod.Services
             public float CenterY;
             public string Description;
             public bool IsDiscovered;
+            public bool IsOnRightSide; // True if on right side (visible when bg_pos_x < 500)
+            public luminolBloodstain Bloodstain;
         }
 
         /// <summary>
@@ -62,12 +65,35 @@ namespace AccessibilityMod.Services
                 // Luminol mode just ended
                 OnLuminolEnd();
             }
+            else if (isActive)
+            {
+                // Check if scroll position changed - refresh if so
+                try
+                {
+                    float currentBgPosX = bgCtrl.instance.bg_pos_x;
+                    if (Math.Abs(currentBgPosX - _lastBgPosX) > 100f)
+                    {
+                        _lastBgPosX = currentBgPosX;
+                        RefreshHotspots();
+                    }
+                }
+                catch { }
+            }
 
             _wasActive = isActive;
         }
 
         private static void OnLuminolStart()
         {
+            try
+            {
+                _lastBgPosX = bgCtrl.instance.bg_pos_x;
+            }
+            catch
+            {
+                _lastBgPosX = 0f;
+            }
+
             RefreshHotspots();
 
             if (_hotspots.Count > 0)
@@ -79,8 +105,9 @@ namespace AccessibilityMod.Services
                         undiscoveredCount++;
                 }
 
+                string scrollHint = IsScrollableBackground() ? " Press Q to pan left/right." : "";
                 string message =
-                    $"Luminol spray mode. {undiscoveredCount} blood trace{(undiscoveredCount != 1 ? "s" : "")} to find. Use [ and ] to navigate, Enter to spray.";
+                    $"Luminol spray mode. {undiscoveredCount} blood trace{(undiscoveredCount != 1 ? "s" : "")} to find. Use [ and ] to navigate, Enter to spray.{scrollHint}";
                 ClipboardManager.Announce(message, TextType.Investigation);
             }
             else
@@ -99,7 +126,24 @@ namespace AccessibilityMod.Services
         }
 
         /// <summary>
+        /// Check if the current background is scrollable (has left/right panning).
+        /// </summary>
+        private static bool IsScrollableBackground()
+        {
+            try
+            {
+                int bgNo = bgCtrl.instance.bg_no;
+                return GSMain_TanteiPart.IsBGSlide(bgNo);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
         /// Refreshes the list of hotspots from the game data.
+        /// Uses blood_ list to get ALL bloodstains, not just active ones.
         /// </summary>
         public static void RefreshHotspots()
         {
@@ -111,54 +155,78 @@ namespace AccessibilityMod.Services
                 if (luminolMiniGame.instance == null || luminolMiniGame.instance.is_end)
                     return;
 
-                // Get converted_point_ which is public
-                var convertedPoints = luminolMiniGame.instance.converted_point_;
+                // Get blood_ field (ALL bloodstains) via reflection
+                var bloodField = typeof(luminolMiniGame).GetField(
+                    "blood_",
+                    BindingFlags.NonPublic | BindingFlags.Instance
+                );
 
-                if (convertedPoints == null || convertedPoints.Count == 0)
+                List<luminolBloodstain> allBlood = null;
+                if (bloodField != null)
+                {
+                    allBlood =
+                        bloodField.GetValue(luminolMiniGame.instance) as List<luminolBloodstain>;
+                }
+
+                if (allBlood == null || allBlood.Count == 0)
                 {
 #if DEBUG
                     AccessibilityMod.Core.AccessibilityMod.Logger?.Msg(
-                        "[Luminol] No converted points found"
+                        "[Luminol] No bloodstains found in blood_ list"
                     );
 #endif
                     return;
                 }
 
-                // Get active_blood_ via reflection to check discovered state
-                var activeBloodField = typeof(luminolMiniGame).GetField(
-                    "active_blood_",
+                // Get blood_parent_right_ and blood_parent_left_ to determine which side
+                var rightParentField = typeof(luminolMiniGame).GetField(
+                    "blood_parent_right_",
+                    BindingFlags.NonPublic | BindingFlags.Instance
+                );
+                var leftParentField = typeof(luminolMiniGame).GetField(
+                    "blood_parent_left_",
                     BindingFlags.NonPublic | BindingFlags.Instance
                 );
 
-                List<luminolBloodstain> activeBlood = null;
-                if (activeBloodField != null)
-                {
-                    activeBlood =
-                        activeBloodField.GetValue(luminolMiniGame.instance)
-                        as List<luminolBloodstain>;
-                }
+                Transform rightParent = null;
+                Transform leftParent = null;
+                if (rightParentField != null)
+                    rightParent = rightParentField.GetValue(luminolMiniGame.instance) as Transform;
+                if (leftParentField != null)
+                    leftParent = leftParentField.GetValue(luminolMiniGame.instance) as Transform;
 
-                for (int i = 0; i < convertedPoints.Count; i++)
+                for (int i = 0; i < allBlood.Count; i++)
                 {
-                    var point = convertedPoints[i];
-
-                    // Skip empty/invalid points
-                    if (point.x0 == 0 && point.y0 == 0 && point.x1 == 0 && point.y1 == 0)
+                    var bloodstain = allBlood[i];
+                    if (bloodstain == null)
                         continue;
 
-                    // Calculate center of the quadrilateral
-                    float centerX = (point.x0 + point.x1 + point.x2 + point.x3) / 4f;
-                    float centerY = (point.y0 + point.y1 + point.y2 + point.y3) / 4f;
+                    // Get position from transform
+                    Vector3 localPos = bloodstain.transform.localPosition;
+
+                    // Determine which side this bloodstain is on
+                    bool isOnRightSide = false;
+                    if (bloodstain.transform.parent == rightParent)
+                    {
+                        isOnRightSide = true;
+                    }
+
+                    // Convert local position to cursor coordinates
+                    // The bloodstain local position uses the format from luminolTable
+                    // pos_x is positive, pos_y is negative (inverted Y)
+                    float centerX = localPos.x;
+                    float centerY = -localPos.y; // Invert Y for cursor coordinates
 
                     // Check if already discovered
-                    bool isDiscovered = false;
-                    if (activeBlood != null && i < activeBlood.Count)
-                    {
-                        isDiscovered = activeBlood[i].state_ != BloodstainState.Undiscovered;
-                    }
+                    bool isDiscovered = bloodstain.state_ != BloodstainState.Undiscovered;
 
                     // Generate position description
                     string posDesc = GetPositionDescription(centerX, centerY);
+                    string sideDesc = "";
+                    if (IsScrollableBackground())
+                    {
+                        sideDesc = isOnRightSide ? ", right side" : ", left side";
+                    }
                     string status = isDiscovered ? " (found)" : "";
 
                     _hotspots.Add(
@@ -167,15 +235,17 @@ namespace AccessibilityMod.Services
                             Index = i,
                             CenterX = centerX,
                             CenterY = centerY,
-                            Description = $"Blood trace {i + 1} ({posDesc}){status}",
+                            Description = $"Blood trace {i + 1} ({posDesc}{sideDesc}){status}",
                             IsDiscovered = isDiscovered,
+                            IsOnRightSide = isOnRightSide,
+                            Bloodstain = bloodstain,
                         }
                     );
                 }
 
 #if DEBUG
                 AccessibilityMod.Core.AccessibilityMod.Logger?.Msg(
-                    $"[Luminol] Found {_hotspots.Count} blood traces"
+                    $"[Luminol] Found {_hotspots.Count} blood traces total"
                 );
 #endif
             }
@@ -228,7 +298,6 @@ namespace AccessibilityMod.Services
 
             // Find next undiscovered hotspot, wrapping around
             int startIndex = _currentIndex;
-            int searchIndex = (_currentIndex + 1) % _hotspots.Count;
             bool foundUndiscovered = false;
 
             // First try to find an undiscovered one
@@ -249,8 +318,7 @@ namespace AccessibilityMod.Services
                 _currentIndex = (_currentIndex + 1) % _hotspots.Count;
             }
 
-            AnnounceCurrentHotspot();
-            MoveCursorToCurrentHotspot();
+            NavigateToCurrentHotspot();
         }
 
         /// <summary>
@@ -297,8 +365,55 @@ namespace AccessibilityMod.Services
                 _currentIndex = (_currentIndex - 1 + _hotspots.Count) % _hotspots.Count;
             }
 
-            AnnounceCurrentHotspot();
-            MoveCursorToCurrentHotspot();
+            NavigateToCurrentHotspot();
+        }
+
+        /// <summary>
+        /// Navigate to the current hotspot, scrolling if necessary.
+        /// </summary>
+        private static void NavigateToCurrentHotspot()
+        {
+            if (_hotspots.Count == 0 || _currentIndex < 0 || _currentIndex >= _hotspots.Count)
+                return;
+
+            var hotspot = _hotspots[_currentIndex];
+
+            // Check if we need to scroll to the other side
+            bool needsScroll = false;
+            try
+            {
+                if (IsScrollableBackground())
+                {
+                    float bgPosX = bgCtrl.instance.bg_pos_x;
+                    bool viewingRightSide = bgPosX < 500f;
+
+                    if (hotspot.IsOnRightSide && !viewingRightSide)
+                    {
+                        needsScroll = true;
+                    }
+                    else if (!hotspot.IsOnRightSide && viewingRightSide)
+                    {
+                        needsScroll = true;
+                    }
+                }
+            }
+            catch { }
+
+            if (needsScroll)
+            {
+                // Tell user to scroll, then announce hotspot
+                string scrollDir = hotspot.IsOnRightSide ? "right" : "left";
+                ClipboardManager.Announce(
+                    $"{hotspot.Description}. Press Q to pan {scrollDir} first.",
+                    TextType.Investigation
+                );
+            }
+            else
+            {
+                // On correct side, move cursor directly
+                AnnounceCurrentHotspot();
+                MoveCursorToCurrentHotspot();
+            }
         }
 
         /// <summary>
@@ -437,8 +552,9 @@ namespace AccessibilityMod.Services
             int total = _hotspots.Count;
             int remaining = GetUndiscoveredCount();
 
+            string scrollHint = IsScrollableBackground() ? " Press Q to pan." : "";
             string message =
-                $"Luminol spray mode. {remaining} of {total} blood trace{(total != 1 ? "s" : "")} remaining. Use [ and ] to navigate.";
+                $"Luminol spray mode. {remaining} of {total} blood trace{(total != 1 ? "s" : "")} remaining. Use [ and ] to navigate.{scrollHint}";
             ClipboardManager.Announce(message, TextType.Investigation);
         }
     }
