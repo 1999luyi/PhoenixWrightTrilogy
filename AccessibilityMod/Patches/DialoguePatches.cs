@@ -389,6 +389,55 @@ namespace AccessibilityMod.Patches
         }
 
         /// <summary>
+        /// Gets statement number info (e.g. "1 / 5") during testimony/cross-examination.
+        /// Returns empty string if not in testimony mode.
+        /// </summary>
+        private static string GetStatementInfo()
+        {
+            try
+            {
+                // Check if we're in testimony (6) or questioning/cross-examination (7) mode
+                if (GSStatic.global_work_ == null || GSStatic.message_work_ == null)
+                    return "";
+
+                int gameMode = GSStatic.global_work_.r.no_0;
+
+                // Only show statement numbers in testimony (6) or questioning (7) modes
+                // and when LOOP status is set (indicates we're in the testimony loop)
+                if (
+                    (gameMode != 6 && gameMode != 7)
+                    || (GSStatic.message_work_.status & MessageSystem.Status.LOOP) == 0
+                )
+                    return "";
+
+                ushort bkStartMess = GSStatic.global_work_.bk_start_mess;
+                ushort bkEndMess = GSStatic.global_work_.Bk_end_mess;
+                ushort nowNo = GSStatic.message_work_.now_no;
+
+                // Validate that we have valid testimony bounds
+                if (bkStartMess == 0 || bkEndMess == 0 || bkEndMess <= bkStartMess)
+                    return "";
+
+                // Calculate statement position
+                // now_no points to the next message after the current one is displayed
+                // So current statement = now_no - bk_start_mess (1-indexed)
+                // Bk_end_mess points one past the last statement (the loop-back marker)
+                int currentStatement = nowNo - bkStartMess;
+                int totalStatements = bkEndMess - bkStartMess - 1;
+
+                // Bounds check
+                if (currentStatement < 1 || currentStatement > totalStatements)
+                    return "";
+
+                return currentStatement + " / " + totalStatements;
+            }
+            catch
+            {
+                return "";
+            }
+        }
+
+        /// <summary>
         /// Central method for attempting to output dialogue.
         /// Handles duplicate detection and all the logic for extracting and announcing text.
         /// </summary>
@@ -431,6 +480,13 @@ namespace AccessibilityMod.Patches
                         }
                     }
                     catch { }
+                }
+
+                // Add statement numbers during testimony/cross-examination
+                string statementInfo = GetStatementInfo();
+                if (!string.IsNullOrEmpty(statementInfo))
+                {
+                    text = text + " " + statementInfo;
                 }
 
                 ClipboardManager.Output(speakerName, text, TextType.Dialogue);
