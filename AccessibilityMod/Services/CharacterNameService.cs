@@ -101,6 +101,9 @@ namespace AccessibilityMod.Services
             { 46, "Russell Berry" },
             { 47, "Bellboy" },
             { 48, "PA Notice" },
+            { 52, "Guard" },
+            { 53, "Shoe" },
+            { 54, "John Doe" },
         };
 
         // GS3 speaker IDs - must be filled in by playing the game
