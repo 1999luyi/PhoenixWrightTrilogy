@@ -137,9 +137,23 @@ namespace AccessibilityMod.Patches
                 _lastMoveCursor = in_cursor_no;
                 _lastCursorNum = in_num;
 
-                string locationName = GetLocationName(__instance, in_cursor_no);
-                string message = $"Move: {locationName}";
-                ClipboardManager.Announce(message, TextType.Menu);
+                // Use delayed announcement to ensure text is populated
+                var ctrl = __instance;
+                int cursor = in_cursor_no;
+                CoroutineRunner.Instance?.ScheduleDelayedAnnouncement(
+                    0.1f,
+                    () =>
+                    {
+                        string locationName = GetLocationName(ctrl, cursor);
+                        if (
+                            Net35Extensions.IsNullOrWhiteSpace(locationName)
+                            || locationName == "New Text"
+                        )
+                            return null;
+                        return $"Move: {locationName}";
+                    },
+                    TextType.Menu
+                );
             }
             catch (Exception ex)
             {
@@ -173,16 +187,23 @@ namespace AccessibilityMod.Patches
                 {
                     _lastMoveCursor = currentCursor;
 
-                    string locationName = GetLocationName(__instance, currentCursor);
-
-                    // Skip placeholder text that appears before actual location data loads
-                    if (
-                        Net35Extensions.IsNullOrWhiteSpace(locationName)
-                        || locationName == "New Text"
-                    )
-                        return;
-
-                    ClipboardManager.Announce(locationName, TextType.Menu);
+                    // Use delayed announcement to ensure text is populated
+                    var ctrl = __instance;
+                    int cursor = currentCursor;
+                    CoroutineRunner.Instance?.ScheduleDelayedAnnouncement(
+                        0.05f,
+                        () =>
+                        {
+                            string locationName = GetLocationName(ctrl, cursor);
+                            if (
+                                Net35Extensions.IsNullOrWhiteSpace(locationName)
+                                || locationName == "New Text"
+                            )
+                                return null;
+                            return locationName;
+                        },
+                        TextType.Menu
+                    );
                 }
             }
             catch (Exception ex)

@@ -69,6 +69,7 @@ namespace AccessibilityMod.Services
             { 5, "Miles Edgeworth" },
             { 6, "Mia Fey" },
             { 7, "Judge" },
+            { 8, "Miles Edgeworth" },
             { 9, "Winston Payne" },
             { 10, "Dick Gumshoe" },
             { 11, "Phone" },
@@ -84,7 +85,6 @@ namespace AccessibilityMod.Services
             { 22, "Director Hotti" },
             { 23, "Turner Grey" },
             { 24, "Lotta Hart" },
-            { 25, "Matt Engarde" },
             { 26, "Nurse" },
             { 27, "Mimi Miney" },
             { 28, "Regina Berry" },
@@ -94,9 +94,12 @@ namespace AccessibilityMod.Services
             { 32, "Acro" },
             { 33, "Trilo" },
             { 34, "Money the Monkey" },
+            { 35, "Matt Engarde" },
+            { 36, "Adrian Andrews" },
             { 39, "Wendy Oldbag" },
             { 40, "Will Powers" },
             { 46, "Russell Berry" },
+            { 47, "Bellboy" },
             { 48, "PA Notice" },
         };
 
