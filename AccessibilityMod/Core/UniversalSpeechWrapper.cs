@@ -47,7 +47,7 @@ namespace AccessibilityMod.Core
                 speechSetValue(SP_ENABLE_NATIVE_SPEECH, 1);
                 _initialized = true;
                 AccessibilityMod.Logger?.Msg("UniversalSpeech initialized");
-                SpeechManager.Announce("Accessibility Mod initialized");
+                SpeechManager.Announce("Accessibility initialized");
             }
             catch (DllNotFoundException ex)
             {
