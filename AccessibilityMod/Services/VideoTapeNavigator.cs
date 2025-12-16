@@ -19,7 +19,8 @@ namespace AccessibilityMod.Services
         private static int _currentTargetIndex = -1;
 
         /// <summary>
-        /// Checks if the video tape examination is currently active.
+        /// Checks if the video tape examination is currently active in interactive mode.
+        /// Returns false when the video is playing non-interactively (e.g., after presenting evidence).
         /// </summary>
         public static bool IsVideoTapeActive()
         {
@@ -28,7 +29,29 @@ namespace AccessibilityMod.Services
                 if (ConfrontWithMovie.instance != null)
                 {
                     var controller = ConfrontWithMovie.instance.movie_controller;
-                    return controller != null && controller.is_play;
+                    if (controller == null || !controller.is_play)
+                        return false;
+
+                    // Check if we're in interactive mode using multiple indicators:
+                    // 1. Cursor must be enabled and its game object active
+                    // 2. Collision player must be enabled (for target detection)
+                    // 3. Must not be in auto_play mode or detail mode
+                    var cursor = ConfrontWithMovie.instance.cursor;
+                    if (cursor == null || !cursor.enabled || !cursor.gameObject.activeSelf)
+                        return false;
+
+                    var collisionPlayer = ConfrontWithMovie.instance.collision_player;
+                    if (collisionPlayer == null || !collisionPlayer.enabled)
+                        return false;
+
+                    // Check we're not in auto-play or detail mode
+                    if (
+                        ConfrontWithMovie.instance.auto_play
+                        || ConfrontWithMovie.instance.IsDetailing
+                    )
+                        return false;
+
+                    return true;
                 }
             }
             catch
