@@ -528,7 +528,7 @@ namespace AccessibilityMod.Patches
                     _lastCategory = categoryInt;
                     _lastOptionIndex = -1; // Reset option index when category changes
 
-                    // Cancel any pending tooltip from previous category
+                    // Cancel any pending tooltip from previous category/option
                     CoroutineRunner.Instance?.CancelDelayedAnnouncement();
 
                     string categoryName = GetCategoryName(cat);
@@ -536,6 +536,9 @@ namespace AccessibilityMod.Patches
                         L.Get("save_load.options_category", categoryName),
                         TextType.Menu
                     );
+
+                    // Schedule delayed tooltip announcement for category
+                    ScheduleCategoryTooltipAnnouncement(__instance, cat);
                 }
             }
             catch (Exception ex)
@@ -607,6 +610,30 @@ namespace AccessibilityMod.Patches
             }
         }
 
+        private static void ScheduleCategoryTooltipAnnouncement(
+            optionCtrl instance,
+            optionCtrl.Category category
+        )
+        {
+            try
+            {
+                if (CoroutineRunner.Instance == null)
+                    return;
+
+                CoroutineRunner.Instance.ScheduleDelayedAnnouncement(
+                    TooltipDelay,
+                    () => GetCategoryTooltipText(instance, category),
+                    TextType.Menu
+                );
+            }
+            catch (Exception ex)
+            {
+                AccessibilityMod.Core.AccessibilityMod.Logger?.Error(
+                    $"Error scheduling category tooltip: {ex.Message}"
+                );
+            }
+        }
+
         private static string GetTooltipText(optionCtrl instance)
         {
             try
@@ -648,6 +675,82 @@ namespace AccessibilityMod.Patches
                         : tooltip + " " + line2;
 
                 return tooltip;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private static string GetCategoryTooltipText(
+            optionCtrl instance,
+            optionCtrl.Category category
+        )
+        {
+            try
+            {
+                if (_titleBackTextField == null)
+                    _titleBackTextField = typeof(optionCtrl).GetField(
+                        "title_back_text_",
+                        NonPublicInstance
+                    );
+
+                if (_titleBackTextField == null)
+                    return null;
+
+                var titleBackTextList =
+                    _titleBackTextField.GetValue(instance) as List<UnityEngine.UI.Text>;
+                if (titleBackTextList == null || titleBackTextList.Count == 0)
+                    return null;
+
+                // Get the key type for button prompts based on category
+                string keyName = GetCategoryKeyName(category);
+
+                // Combine both lines of tooltip text
+                string line1 = titleBackTextList.Count > 0 ? titleBackTextList[0]?.text : null;
+                string line2 = titleBackTextList.Count > 1 ? titleBackTextList[1]?.text : null;
+
+                // Replace button icon placeholders (whitespace sequences) with key name
+                if (!Net35Extensions.IsNullOrWhiteSpace(keyName))
+                {
+                    line1 = ReplaceButtonPlaceholder(line1, keyName);
+                    line2 = ReplaceButtonPlaceholder(line2, keyName);
+                }
+
+                string tooltip = "";
+                if (!Net35Extensions.IsNullOrWhiteSpace(line1))
+                    tooltip = line1;
+                if (!Net35Extensions.IsNullOrWhiteSpace(line2))
+                    tooltip = Net35Extensions.IsNullOrWhiteSpace(tooltip)
+                        ? line2
+                        : tooltip + " " + line2;
+
+                return tooltip;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private static string GetCategoryKeyName(optionCtrl.Category category)
+        {
+            try
+            {
+                // Based on game's keyIconSet(Category category) method:
+                // Only KEYCONFIG and LANGUAGE categories have button prompts (A button)
+                KeyType keyType;
+                switch (category)
+                {
+                    case optionCtrl.Category.KEYCONFIG:
+                    case optionCtrl.Category.LANGUAGE:
+                        keyType = KeyType.A;
+                        break;
+                    default:
+                        return null;
+                }
+
+                return GetKeyTypeName(keyType);
             }
             catch
             {

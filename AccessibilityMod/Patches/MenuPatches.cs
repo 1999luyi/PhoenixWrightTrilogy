@@ -42,6 +42,10 @@ namespace AccessibilityMod.Patches
                 if (TryAnnounceOptionCtrlConfirmation(__instance))
                     return;
 
+                // Check if this is the exit game confirmation dialog
+                if (TryAnnounceExitGameDialog(__instance))
+                    return;
+
                 // Check if this is the main menu (from mainTitleCtrl)
                 var mainTitle = mainTitleCtrl.instance;
                 if (mainTitle == null)
@@ -473,7 +477,155 @@ namespace AccessibilityMod.Patches
 
         #endregion
 
+        #region Exit Game Dialogue Patch
+
+        // Hook titleSelectPlate.playCursor more specifically for exit game dialog
+        // Called from TitleSelectPlate_PlayCursor_Postfix when playCursor is invoked
+        private static bool TryAnnounceExitGameDialog(titleSelectPlate instance)
+        {
+            try
+            {
+                var mainTitle = mainTitleCtrl.instance;
+                if (mainTitle == null)
+                    return false;
+
+                // Check if this is the game_end_select_ from mainTitleCtrl
+                var gameEndField = typeof(mainTitleCtrl).GetField(
+                    "game_end_select_",
+                    System.Reflection.BindingFlags.NonPublic
+                        | System.Reflection.BindingFlags.Instance
+                );
+                if (gameEndField == null)
+                    return false;
+
+                var gameEndSelect = gameEndField.GetValue(mainTitle) as titleSelectPlate;
+                if (gameEndSelect != instance)
+                    return false;
+
+                // This is the exit game confirmation dialog
+                // Get the message text from message_text_list_
+                var messageField = typeof(mainTitleCtrl).GetField(
+                    "message_text_list_",
+                    System.Reflection.BindingFlags.NonPublic
+                        | System.Reflection.BindingFlags.Instance
+                );
+                if (messageField == null)
+                    return false;
+
+                var messageList = messageField.GetValue(mainTitle) as List<UnityEngine.UI.Text>;
+                if (messageList == null || messageList.Count == 0)
+                    return false;
+
+                string message = "";
+                foreach (var text in messageList)
+                {
+                    if (text != null && !Core.Net35Extensions.IsNullOrWhiteSpace(text.text))
+                    {
+                        if (!Core.Net35Extensions.IsNullOrWhiteSpace(message))
+                            message += " ";
+                        message += text.text;
+                    }
+                }
+
+                if (!Core.Net35Extensions.IsNullOrWhiteSpace(message))
+                {
+                    SpeechManager.Announce(message, TextType.Menu);
+                    return true;
+                }
+            }
+            catch { }
+            return false;
+        }
+
+        #endregion
+
         #region Chapter Jump Patches
+
+        // Chapter jump warning - announce trophy warning message
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(ChapterJumpInMenuCtrl), "WarningInit")]
+        public static void ChapterJump_WarningInit_Postfix(ChapterJumpInMenuCtrl __instance)
+        {
+            try
+            {
+                var startTextField = typeof(ChapterJumpInMenuCtrl).GetField(
+                    "start_text_",
+                    System.Reflection.BindingFlags.NonPublic
+                        | System.Reflection.BindingFlags.Instance
+                );
+                if (startTextField == null)
+                    return;
+
+                var startText = startTextField.GetValue(__instance) as List<UnityEngine.UI.Text>;
+                if (startText == null || startText.Count == 0)
+                    return;
+
+                string message = "";
+                foreach (var text in startText)
+                {
+                    if (text != null && !Core.Net35Extensions.IsNullOrWhiteSpace(text.text))
+                    {
+                        if (!Core.Net35Extensions.IsNullOrWhiteSpace(message))
+                            message += " ";
+                        message += text.text;
+                    }
+                }
+
+                if (!Core.Net35Extensions.IsNullOrWhiteSpace(message))
+                {
+                    SpeechManager.Announce(message, TextType.Menu);
+                }
+            }
+            catch (Exception ex)
+            {
+                AccessibilityMod.Core.AccessibilityMod.Logger?.Error(
+                    $"Error in ChapterJump_WarningInit patch: {ex.Message}"
+                );
+            }
+        }
+
+        // Chapter jump confirmation - announce play confirmation message
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(ChapterJumpInMenuCtrl), "EnterConfirm")]
+        public static void ChapterJump_EnterConfirm_Postfix(ChapterJumpInMenuCtrl __instance)
+        {
+            try
+            {
+                var startTextField = typeof(ChapterJumpInMenuCtrl).GetField(
+                    "start_text_",
+                    System.Reflection.BindingFlags.NonPublic
+                        | System.Reflection.BindingFlags.Instance
+                );
+                if (startTextField == null)
+                    return;
+
+                var startText = startTextField.GetValue(__instance) as List<UnityEngine.UI.Text>;
+                if (startText == null || startText.Count == 0)
+                    return;
+
+                string message = "";
+                foreach (var text in startText)
+                {
+                    if (text != null && !Core.Net35Extensions.IsNullOrWhiteSpace(text.text))
+                    {
+                        if (!Core.Net35Extensions.IsNullOrWhiteSpace(message))
+                            message += " ";
+                        message += text.text;
+                    }
+                }
+
+                if (!Core.Net35Extensions.IsNullOrWhiteSpace(message))
+                {
+                    SpeechManager.Announce(message, TextType.Menu);
+                }
+            }
+            catch (Exception ex)
+            {
+                AccessibilityMod.Core.AccessibilityMod.Logger?.Error(
+                    $"Error in ChapterJump_EnterConfirm patch: {ex.Message}"
+                );
+            }
+        }
 
         // Chapter jump menu - announce when entering chapter selection
         [HarmonyPostfix]
