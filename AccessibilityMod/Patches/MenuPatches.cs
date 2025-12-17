@@ -972,7 +972,7 @@ namespace AccessibilityMod.Patches
             else if (isRead)
             {
                 // Topic has been discussed (checkmark)
-                return optionText + " " + L.Get("psyche_lock.topic_discussed");
+                return optionText + " " + L.Get("menu.topic_discussed");
             }
 
             return optionText;

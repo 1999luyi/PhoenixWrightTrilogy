@@ -45,4 +45,15 @@
     <Message Text="--- Copying $(AssemblyName).dll to game Mods folder ---" Importance="high" />
     <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(GamePath)\Mods" />
   </Target>
+  <!--Copy files from AccessibilityMod/Data/en to GAMEPATH/UserData/AccessibilityMod/en-->
+  <Target Name="CopyDataFiles" AfterTargets="PostBuildEvent">
+    <Message Text="--- Copying data files to game UserData folder ---" Importance="high" />
+    <ItemGroup>
+      <DataFiles Include="Data\**\*.*" />
+    </ItemGroup>
+    <Copy
+      SourceFiles="@(DataFiles)"
+      DestinationFiles="@(DataFiles->'$(GamePath)\UserData\AccessibilityMod\%(RecursiveDir)%(Filename)%(Extension)')"
+    />
+  </Target>
 </Project>

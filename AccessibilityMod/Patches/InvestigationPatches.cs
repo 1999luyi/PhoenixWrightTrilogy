@@ -156,7 +156,7 @@ namespace AccessibilityMod.Patches
                             || locationName == "New Text"
                         )
                             return null;
-                        return $"Move: {locationName}";
+                        return L.Get("menu.move_prefix") + locationName;
                     },
                     TextType.Menu
                 );
