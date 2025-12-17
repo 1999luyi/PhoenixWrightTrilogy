@@ -386,32 +386,215 @@ namespace AccessibilityMod.Core
 
         private IEnumerator VerdictAnnouncementCoroutine(bool isNotGuilty)
         {
-            if (isNotGuilty)
-            {
-                // Match the two sound effect hits from judgmentCtrl.CoroutineUSA
-                // First sound at frame 20 (~0.33s), second at frame 90 (~1.5s)
-                yield return new WaitForSeconds(0.33f);
-                SpeechManager.Announce(Services.L.Get("verdict.not"), TextType.Trial);
+            // Determine animation style based on game language (matches judgmentCtrl logic)
+            Language language = GSStatic.global_work_.language;
+            Language layoutType = GSUtility.GetLanguageLayoutType(language);
 
-                yield return new WaitForSeconds(1.17f); // 1.5s - 0.33s
-                SpeechManager.Announce(Services.L.Get("verdict.guilty"), TextType.Trial);
+            if (layoutType == Language.JAPAN)
+            {
+                // Japanese/Korean/Chinese layout: Characters appear together with two sound hits
+                // Sound at 0.1s and 0.35s, announce at first sound
+                yield return new WaitForSeconds(0.1f);
+                string langPrefix = GetJapaneseLayoutLanguagePrefix(language);
+                string verdictKey = isNotGuilty
+                    ? "verdict." + langPrefix + ".not_guilty"
+                    : "verdict." + langPrefix + ".guilty";
+                SpeechManager.Announce(Services.L.Get(verdictKey), TextType.Trial);
+            }
+            else if (language == Language.Pt_BR)
+            {
+                // Portuguese: All letters spelled out sequentially at 10-frame intervals
+                yield return StartCoroutine(VerdictPortugueseCoroutine(isNotGuilty));
             }
             else
             {
-                // Spell out G-U-I-L-T-Y matching 6 sound effects at 10-frame intervals
-                // Note: This spelling may need adjustment for non-English localizations
-                string[] letters = Services.L.Get("verdict.guilty_letters").Split('-');
-                yield return new WaitForSeconds(0.17f); // First sound at frame 10
+                // USA/Default layout (includes French, German, Spanish)
+                yield return StartCoroutine(VerdictUSAStyleCoroutine(isNotGuilty, language));
+            }
+        }
 
-                for (int i = 0; i < letters.Length; i++)
+        private IEnumerator VerdictUSAStyleCoroutine(bool isNotGuilty, Language language)
+        {
+            if (isNotGuilty)
+            {
+                // Not Guilty: Two parts with pause between them
+                // First sound at frame 20 (~0.33s), second at frame 90 (~1.5s)
+                string part1Key,
+                    part2Key;
+
+                switch (language)
                 {
-                    SpeechManager.Announce(letters[i], TextType.Trial);
-                    if (i < letters.Length - 1)
-                    {
-                        yield return new WaitForSeconds(0.17f); // 10 frames between
-                    }
+                    case Language.FRANCE:
+                        part1Key = "verdict.fr.not_guilty_part1";
+                        part2Key = "verdict.fr.not_guilty_part2";
+                        break;
+                    case Language.GERMAN:
+                        part1Key = "verdict.de.not_guilty_part1";
+                        part2Key = "verdict.de.not_guilty_part2";
+                        break;
+                    case Language.ES_419:
+                        part1Key = "verdict.es.not_guilty_part1";
+                        part2Key = "verdict.es.not_guilty_part2";
+                        break;
+                    default: // USA and fallback
+                        part1Key = "verdict.en.not_guilty_part1";
+                        part2Key = "verdict.en.not_guilty_part2";
+                        break;
+                }
+
+                yield return new WaitForSeconds(0.33f);
+                SpeechManager.Announce(Services.L.Get(part1Key), TextType.Trial);
+
+                yield return new WaitForSeconds(1.17f); // 1.5s - 0.33s
+                SpeechManager.Announce(Services.L.Get(part2Key), TextType.Trial);
+            }
+            else
+            {
+                // Guilty: Letters spelled out sequentially at 10-frame intervals
+                string lettersKey;
+
+                switch (language)
+                {
+                    case Language.FRANCE:
+                        lettersKey = "verdict.fr.guilty_letters";
+                        break;
+                    case Language.GERMAN:
+                        lettersKey = "verdict.de.guilty_letters";
+                        break;
+                    case Language.ES_419:
+                        lettersKey = "verdict.es.guilty_letters";
+                        break;
+                    default: // USA and fallback
+                        lettersKey = "verdict.en.guilty_letters";
+                        break;
+                }
+
+                yield return StartCoroutine(SpellLettersCoroutine(lettersKey));
+            }
+        }
+
+        private IEnumerator VerdictPortugueseCoroutine(bool isNotGuilty)
+        {
+            string lettersKey;
+
+            if (isNotGuilty)
+            {
+                lettersKey = "verdict.pt.not_guilty_letters";
+            }
+            else
+            {
+                // Determine grammatical gender for Portuguese guilty verdict
+                bool isFeminine = GetPortugueseGrammaticalGenderIsFeminine();
+                lettersKey = isFeminine
+                    ? "verdict.pt.guilty_feminine_letters"
+                    : "verdict.pt.guilty_masculine_letters";
+            }
+
+            yield return StartCoroutine(SpellLettersCoroutine(lettersKey));
+        }
+
+        private IEnumerator SpellLettersCoroutine(string lettersKey)
+        {
+            string[] letters = Services.L.Get(lettersKey).Split('-');
+            yield return new WaitForSeconds(0.17f); // First sound at frame 10
+
+            for (int i = 0; i < letters.Length; i++)
+            {
+                // Skip empty entries (spaces in "N-O-N- -C-O-U-P-A-B-L-E")
+                string letter = letters[i].Trim();
+                if (!Net35Extensions.IsNullOrWhiteSpace(letter))
+                {
+                    SpeechManager.Announce(letter, TextType.Trial);
+                }
+
+                if (i < letters.Length - 1)
+                {
+                    yield return new WaitForSeconds(0.17f); // 10 frames between (~0.17s at 60fps)
                 }
             }
+        }
+
+        /// <summary>
+        /// Gets the localization key prefix for Japanese-layout languages
+        /// </summary>
+        private string GetJapaneseLayoutLanguagePrefix(Language language)
+        {
+            switch (language)
+            {
+                case Language.KOREA:
+                    return "ko";
+                case Language.CHINA_S:
+                case Language.CHINA_T:
+                    return "zh";
+                default: // JAPAN and fallback
+                    return "ja";
+            }
+        }
+
+        /// <summary>
+        /// Determines grammatical gender for Portuguese verdict (matches judgmentCtrl.GetGrammaticalGender)
+        /// </summary>
+        private bool GetPortugueseGrammaticalGenderIsFeminine()
+        {
+            try
+            {
+                TitleId title = GSStatic.global_work_.title;
+                int story = GSStatic.global_work_.story;
+                int scenario = GSStatic.global_work_.scenario;
+
+                switch (title)
+                {
+                    case TitleId.GS1:
+                        switch (story)
+                        {
+                            case 0:
+                                return false; // Masculine
+                            case 1:
+                                return scenario != 4; // Feminine except scenario 4
+                            case 2:
+                                return false;
+                            case 3:
+                                return false;
+                            case 4:
+                                return true; // Feminine
+                        }
+                        break;
+                    case TitleId.GS2:
+                        switch (story)
+                        {
+                            case 0:
+                                return true; // Feminine
+                            case 1:
+                                return true;
+                            case 2:
+                                return false;
+                            case 3:
+                                return false;
+                        }
+                        break;
+                    case TitleId.GS3:
+                        switch (story)
+                        {
+                            case 0:
+                                return false;
+                            case 1:
+                                return false;
+                            case 2:
+                                return true; // Feminine
+                            case 3:
+                                return false;
+                            case 4:
+                                return true; // Feminine
+                        }
+                        break;
+                }
+            }
+            catch
+            {
+                // Fallback to feminine on error
+            }
+
+            return true; // Default to feminine (matches game default)
         }
 
         /// <summary>

@@ -318,9 +318,44 @@
     "safe_keypad.entered": "Entered {0}",
 
     "_section_verdict": "=== Verdict ===",
-    "verdict.not": "Not",
-    "verdict.guilty": "Guilty",
-    "verdict.guilty_letters": "G-U-I-L-T-Y",
+    "_comment_verdict": "Verdict strings are organized by language to match animation timing",
+
+    "_comment_verdict_en": "English: NOT (pause) GUILTY for not guilty, G-U-I-L-T-Y spelled for guilty",
+    "verdict.en.not_guilty_part1": "Not",
+    "verdict.en.not_guilty_part2": "Guilty",
+    "verdict.en.guilty_letters": "G-U-I-L-T-Y",
+
+    "_comment_verdict_ja": "Japanese layout: Characters appear together",
+    "verdict.ja.not_guilty": "無罪",
+    "verdict.ja.guilty": "有罪",
+
+    "_comment_verdict_ko": "Korean layout: Characters appear together (uses Japanese animation)",
+    "verdict.ko.not_guilty": "무죄",
+    "verdict.ko.guilty": "유죄",
+
+    "_comment_verdict_zh": "Chinese layout: Characters appear together (uses Japanese animation)",
+    "verdict.zh.not_guilty": "無罪",
+    "verdict.zh.guilty": "有罪",
+
+    "_comment_verdict_fr": "French: NON COUPABLE / COUPABLE - two parts for not guilty",
+    "verdict.fr.not_guilty_part1": "Non",
+    "verdict.fr.not_guilty_part2": "Coupable",
+    "verdict.fr.guilty_letters": "C-O-U-P-A-B-L-E",
+
+    "_comment_verdict_de": "German: NICHT SCHULDIG / SCHULDIG - two parts for not guilty",
+    "verdict.de.not_guilty_part1": "Nicht",
+    "verdict.de.not_guilty_part2": "Schuldig",
+    "verdict.de.guilty_letters": "S-C-H-U-L-D-I-G",
+
+    "_comment_verdict_es": "Spanish: NO CULPABLE / CULPABLE - two parts for not guilty",
+    "verdict.es.not_guilty_part1": "No",
+    "verdict.es.not_guilty_part2": "Culpable",
+    "verdict.es.guilty_letters": "C-U-L-P-A-B-L-E",
+
+    "_comment_verdict_pt": "Portuguese: INOCENTE / CULPADO or CULPADA - all letters spelled",
+    "verdict.pt.not_guilty_letters": "I-N-O-C-E-N-T-E",
+    "verdict.pt.guilty_masculine_letters": "C-U-L-P-A-D-O",
+    "verdict.pt.guilty_feminine_letters": "C-U-L-P-A-D-A",
 
     "_section_keys_keyboard": "=== Keyboard Keys ===",
     "key.space": "Space",
