@@ -25,6 +25,9 @@
   "mode.court_record": "Court Record",
   "mode.gallery": "Gallery",
   "mode.menu": "Menu",
+  "mode.main_menu": "Main Menu",
+  "mode.dialogue": "Dialogue",
+  "mode.options": "Options",
 
   "_section_position": "=== Position Descriptions ===",
   "position.top": "top",

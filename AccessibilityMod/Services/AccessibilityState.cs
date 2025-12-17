@@ -218,10 +218,6 @@ namespace AccessibilityMod.Services
                             + ". "
                             + L.Get("navigation.use_brackets_navigate");
                     }
-                    else
-                    {
-                        stateInfo += ". Use arrow keys to move cursor.";
-                    }
                 }
                 else if (IsInInvestigationMode())
                 {
@@ -246,7 +242,9 @@ namespace AccessibilityMod.Services
                 }
                 else if (CurrentMode != GameMode.Unknown)
                 {
-                    stateInfo = L.Get("mode.generic", CurrentMode.ToString());
+                    var modeKey = GetModeLocalizationKey(CurrentMode);
+                    stateInfo =
+                        modeKey != null ? L.Get(modeKey) : L.Get("system.unable_to_read_state");
                 }
                 else
                 {
@@ -310,6 +308,29 @@ namespace AccessibilityMod.Services
                 AccessibilityMod.Core.AccessibilityMod.Logger?.Error(
                     $"Error getting life gauge: {ex.Message}"
                 );
+            }
+        }
+
+        private static string GetModeLocalizationKey(GameMode mode)
+        {
+            switch (mode)
+            {
+                case GameMode.MainMenu:
+                    return "mode.main_menu";
+                case GameMode.Investigation:
+                    return "mode.investigation";
+                case GameMode.Trial:
+                    return "mode.trial";
+                case GameMode.Dialogue:
+                    return "mode.dialogue";
+                case GameMode.Menu:
+                    return "mode.menu";
+                case GameMode.Gallery:
+                    return "mode.gallery";
+                case GameMode.Options:
+                    return "mode.options";
+                default:
+                    return null;
             }
         }
     }
