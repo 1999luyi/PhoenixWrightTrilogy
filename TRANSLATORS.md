@@ -170,6 +170,63 @@ After his arrest, fiancee Polly Jenkins committed suicide.
    - Evidence examination
    - Mini-games (fingerprinting, luminol, etc.)
 
+## Validating Your Translation
+
+Use the **LocalizationValidator** tool to check your translation for common issues before submitting.
+
+### Running the Validator
+
+```bash
+cd LocalizationValidator
+dotnet run -- <language-code>
+```
+
+**Examples:**
+
+```bash
+# Validate French translation
+dotnet run -- fr
+
+# Validate with strict mode (warnings become errors)
+dotnet run -- ja --strict
+
+# Use custom data path
+dotnet run -- de --data-path C:\Path\To\Data
+```
+
+### What It Checks
+
+| Check | Severity | Description |
+|-------|----------|-------------|
+| Missing keys | Error | Keys present in English but missing in your translation |
+| Extra keys | Warning | Keys in your translation that don't exist in English (typos or outdated) |
+| Placeholder mismatch | Error | Format placeholders (`{0}`, `{1}`) don't match English |
+| Incomplete plurals | Warning | Missing `.one` or `.other` form when English has both |
+| Empty values | Warning | Translated value is empty when English has content |
+
+### Example Output
+
+```
+Validating: fr/strings.json against en/strings.json
+
+=== ERRORS ===
+[MISSING] navigation.new_key - Key missing in translation
+[PLACEHOLDER] trial.life_gauge - Expected {0}, found {1}
+
+=== WARNINGS ===
+[EXTRA] old.removed_key - Key not in English (remove or typo?)
+
+=== SUMMARY ===
+English keys: 390
+Translated keys: 385
+Errors: 2
+Warnings: 1
+
+Validation FAILED
+```
+
+Fix all errors before submitting your translation. Warnings should be reviewed but may be acceptable in some cases.
+
 ## Partial Translations
 
 You don't need to translate everything at once. The mod falls back to English for any missing files:
