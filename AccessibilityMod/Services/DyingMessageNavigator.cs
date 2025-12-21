@@ -323,11 +323,23 @@ namespace AccessibilityMod.Services
 
         /// <summary>
         /// Gets a description for the given dot index.
+        /// Prioritises localised strings, falling back to hardcoded descriptions.
         /// </summary>
         private static string GetDotDescription(int index)
         {
             try
             {
+                // Try localised string first (e.g., "dying_message.dot_0")
+                string locKey = "dying_message.dot_" + index;
+                string localised = L.Get(locKey);
+
+                // If localisation returned the key itself, it's not defined - use fallback
+                if (localised != locKey)
+                {
+                    return localised;
+                }
+
+                // Fall back to hardcoded descriptions
                 switch (GSStatic.global_work_.language)
                 {
                     case Language.JAPAN:
@@ -337,20 +349,22 @@ namespace AccessibilityMod.Services
                         {
                             return DotDescriptions_JP[index];
                         }
-                        return L.Get("dying_message.position", index + 1);
+                        break;
                     case Language.KOREA:
                         if (index >= 0 && index < DotDescriptions_KR.Length)
                         {
                             return DotDescriptions_KR[index];
                         }
-                        return L.Get("dying_message.position", index + 1);
+                        break;
                     default:
                         if (index >= 0 && index < DotDescriptions_US.Length)
                         {
                             return DotDescriptions_US[index];
                         }
-                        return L.Get("dying_message.position", index + 1);
+                        break;
                 }
+
+                return L.Get("dying_message.position", index + 1);
             }
             catch
             {
