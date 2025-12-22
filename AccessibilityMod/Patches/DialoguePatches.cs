@@ -185,6 +185,19 @@ namespace AccessibilityMod.Patches
                 // Only capture when board is about to close and is currently active
                 if (!in_board && __instance.body_active)
                 {
+                    // Skip dialogue capture when in court record, evidence details, or 3D evidence mode.
+                    // These modes reuse the message board but the text is stale from the main game.
+                    // Navigating within these modes (e.g., opening evidence details) triggers
+                    // board state changes that would incorrectly announce old dialogue.
+                    if (
+                        AccessibilityState.IsInCourtRecordMode()
+                        || AccessibilityState.IsInEvidenceDetailsMode()
+                        || AccessibilityState.IsIn3DEvidenceMode()
+                    )
+                    {
+                        return;
+                    }
+
                     // Capture any text before the board closes
                     TryOutputDialogue();
                 }
@@ -338,6 +351,7 @@ namespace AccessibilityMod.Patches
                 if (
                     req == SubWindow.Req.NONE
                     || req == SubWindow.Req.IDLE
+                    || req == SubWindow.Req.STATUS_SETU
                     || req.ToString().Contains("EXIT")
                 )
                 {

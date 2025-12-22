@@ -134,7 +134,25 @@ namespace AccessibilityMod.Services
         {
             try
             {
-                if (recordListCtrl.instance != null && recordListCtrl.instance.is_open)
+                var ctrl = recordListCtrl.instance;
+                if (ctrl != null && ctrl.body_active && ctrl.is_open)
+                {
+                    return true;
+                }
+            }
+            catch
+            {
+                // Class may not exist in current context
+            }
+            return false;
+        }
+
+        public static bool IsInEvidenceDetailsMode()
+        {
+            try
+            {
+                var ctrl = recordListCtrl.instance;
+                if (ctrl != null && ctrl.detail_open)
                 {
                     return true;
                 }
@@ -205,6 +223,33 @@ namespace AccessibilityMod.Services
                     // Delegate to GalleryOrchestraNavigator for detailed state
                     GalleryOrchestraNavigator.AnnounceState();
                     return;
+                }
+                else if (IsInEvidenceDetailsMode())
+                {
+                    // Announce evidence details state
+                    stateInfo = L.Get("court_record.details_view");
+                }
+                else if (IsInCourtRecordMode())
+                {
+                    // Announce court record state
+                    try
+                    {
+                        var ctrl = recordListCtrl.instance;
+                        string tabName =
+                            ctrl.record_type == 0
+                                ? L.Get("court_record.evidence")
+                                : L.Get("court_record.profiles");
+                        int itemCount = 0;
+                        if (ctrl.record_data_ != null && ctrl.record_type < ctrl.record_data_.Count)
+                        {
+                            itemCount = ctrl.record_data_[ctrl.record_type].cursor_num_;
+                        }
+                        stateInfo = L.Get("court_record.state", tabName, itemCount);
+                    }
+                    catch
+                    {
+                        stateInfo = L.Get("mode.court_record");
+                    }
                 }
                 else if (IsInPointingMode())
                 {

@@ -289,6 +289,8 @@
   "court_record.evidence": "Evidence",
   "court_record.profiles": "Profiles",
   "court_record.opened": "Court Record: {0}. {1} items.",
+  "court_record.state": "Court Record: {0}. {1} items.",
+  "court_record.details_view": "Evidence details view. Press Backspace to close.",
   "court_record.tab_items": "{0}. {1} items.",
   "court_record.press_for_details": "Press Enter for details",
   "court_record.no_description": "No description. Detail ID: {0}.",
