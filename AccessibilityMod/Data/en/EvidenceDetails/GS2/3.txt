@@ -1,0 +1,7 @@
+A partial floor plan map details the layout of Fey Manor, highlighting four distinct interconnected areas against a grey background.
+
+The largest area, located in the bottom-left quadrant, is a square space labeled "Meditation Room." Directly attached to the top center of this room is a smaller, vertically oriented rectangle labeled "Channeling Chamber." A gap in the dividing line indicates a doorway connecting the two spaces.
+
+Extending from the upper right side of the Meditation Room is a corridor labeled "Winding Way." This hallway runs horizontally to the right before turning ninety degrees upward. It connects to the final area in the top-right corner, a rectangular space labeled "Side Room."
+
+The map uses beige fill for the rooms and thick brown lines for the walls. Large white text with brown outlines identifies the image in the bottom right corner as "Fey Manor Guidemap (Partial)."
