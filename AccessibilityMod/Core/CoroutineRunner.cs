@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using AccessibilityMod.Patches;
+using MelonAccessibilityLib;
 using UnityEngine;
 
 namespace AccessibilityMod.Core
@@ -85,7 +86,7 @@ namespace AccessibilityMod.Core
                             optionText,
                             cursorNo
                         );
-                        SpeechManager.Announce(announcement, TextType.MenuChoice);
+                        SpeechManager.Announce(announcement, GameTextType.MenuChoice);
                     }
                     _lastSelectPlateCursor = cursorNo;
                 }
@@ -164,7 +165,7 @@ namespace AccessibilityMod.Core
                     string optionText = GetTitleSelectPlateOptionText(mainTitle, cursorNo);
                     if (!Net35Extensions.IsNullOrWhiteSpace(optionText))
                     {
-                        SpeechManager.Announce(optionText, TextType.Menu);
+                        SpeechManager.Announce(optionText, GameTextType.Menu);
                     }
                     _lastTitleSelectCursor = cursorNo;
                 }
@@ -259,7 +260,7 @@ namespace AccessibilityMod.Core
 
                     if (!Net35Extensions.IsNullOrWhiteSpace(optionText))
                     {
-                        SpeechManager.Announce(optionText, TextType.Menu);
+                        SpeechManager.Announce(optionText, GameTextType.Menu);
                     }
                     _lastSeriesSelectCursor = cursorNo;
                 }
@@ -323,7 +324,7 @@ namespace AccessibilityMod.Core
                     string optionText = GetGeneralSelectPlateOptionText(selectPlate, cursorNo);
                     if (!Net35Extensions.IsNullOrWhiteSpace(optionText))
                     {
-                        SpeechManager.Announce(optionText, TextType.Menu);
+                        SpeechManager.Announce(optionText, GameTextType.Menu);
                     }
                     _lastGeneralSelectCursor = cursorNo;
                 }
@@ -399,7 +400,7 @@ namespace AccessibilityMod.Core
                 string verdictKey = isNotGuilty
                     ? "verdict." + langPrefix + ".not_guilty"
                     : "verdict." + langPrefix + ".guilty";
-                SpeechManager.Announce(Services.L.Get(verdictKey), TextType.Trial);
+                SpeechManager.Announce(Services.L.Get(verdictKey), GameTextType.Trial);
             }
             else if (language == Language.Pt_BR)
             {
@@ -443,10 +444,10 @@ namespace AccessibilityMod.Core
                 }
 
                 yield return new WaitForSeconds(0.33f);
-                SpeechManager.Announce(Services.L.Get(part1Key), TextType.Trial);
+                SpeechManager.Announce(Services.L.Get(part1Key), GameTextType.Trial);
 
                 yield return new WaitForSeconds(1.17f); // 1.5s - 0.33s
-                SpeechManager.Announce(Services.L.Get(part2Key), TextType.Trial);
+                SpeechManager.Announce(Services.L.Get(part2Key), GameTextType.Trial);
             }
             else
             {
@@ -504,7 +505,7 @@ namespace AccessibilityMod.Core
                 string letter = letters[i].Trim();
                 if (!Net35Extensions.IsNullOrWhiteSpace(letter))
                 {
-                    SpeechManager.Announce(letter, TextType.Trial);
+                    SpeechManager.Announce(letter, GameTextType.Trial);
                 }
 
                 if (i < letters.Length - 1)
@@ -604,7 +605,7 @@ namespace AccessibilityMod.Core
         public void ScheduleDelayedAnnouncement(
             float delaySeconds,
             Func<string> getTextFunc,
-            TextType textType
+            int textType
         )
         {
             // Cancel any pending delayed announcement
@@ -637,7 +638,7 @@ namespace AccessibilityMod.Core
         private IEnumerator DelayedAnnouncementCoroutine(
             float delaySeconds,
             Func<string> getTextFunc,
-            TextType textType,
+            int textType,
             int announcementId
         )
         {
