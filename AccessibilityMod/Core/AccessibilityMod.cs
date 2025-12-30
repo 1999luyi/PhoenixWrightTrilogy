@@ -51,6 +51,11 @@ namespace AccessibilityMod.Core
                 || textType == GameTextType.Narrator
                 || textType == GameTextType.Credits;
 
+            // Register game-specific text replacements for screen reader compatibility
+            // Replace multiplication signs with 'x' (used in resolution strings like "1920☓1080")
+            TextCleaner.AddReplacement("\u2613", "x"); // ☓ (ballot x)
+            TextCleaner.AddReplacement("\u00D7", "x"); // × (multiplication sign)
+
             // Initialize speech
             if (SpeechManager.Initialize())
             {
