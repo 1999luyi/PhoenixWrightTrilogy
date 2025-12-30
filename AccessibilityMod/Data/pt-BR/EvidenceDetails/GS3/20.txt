@@ -1,0 +1,7 @@
+Um mapa aéreo ilustra uma região florestada dividida por um rio azul, apresentando o "Templo Hazakura" na margem oeste e o "Templo Interior" na margem leste, ligados por uma ponte suspensa.
+
+A paisagem é renderizada em blocos simplificados de cor. O lado esquerdo consiste em terreno verde plano intercalado com grandes formas irregulares marrom escuro representando floresta densa. Um caminho bege serpenteia da borda esquerda do mapa, ramificando-se para norte até o complexo do templo principal. Esta estrutura é representada por um ícone estilizado de um edifício japonês tradicional com um telhado escuro, rotulado como "Templo Hazakura" em texto branco grande.
+
+O caminho continua para leste a partir da bifurcação, alargando-se em uma clareira retangular antes de alcançar a margem do rio. Uma ponte suspensa de madeira atravessa a faixa vertical de água azul. O deck da ponte é marcado com linhas verticais, e cabos de suspensão brancos se cruzam em forma de "X", conectando pontos de ancoragem em ambos os lados do rio.
+
+Na margem direita, o terreno muda para uma face de penhasco rochosa de cor marrom claro. O caminho recomeça deste lado, virando para sul para levar a um menor ícone de edifício isolado rotulado como "Templo Interior". Este segundo templo é cercado pelo terreno de penhasco rochoso e outras seções de floresta marrom escuro, parecendo mais isolado do que o templo principal do outro lado do rio.

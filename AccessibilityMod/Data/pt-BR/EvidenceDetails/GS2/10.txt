@@ -1,0 +1,5 @@
+Um mapa esquemático exibe duas localizações distintas: o Picadão do Circo Grande Maravilha circular à esquerda e uma Casa de Hóspedes retangular à direita.
+
+O lado esquerdo apresenta uma visão parcial de uma grande estrutura circular rotulada como "Picadão do Circo Grande Maravilha" no centro. Ao redor do ringue central há um corredor externo segmentado. O segmento superior é rotulado como "Sala do Mestre de Cerimônias" e o segmento adjacente movendo-se no sentido horário é rotulado como "Cafeteria".
+
+À direita, uma área de edifício retangular é rotulada como "Casa de Hóspedes". Dentro deste bloco, dois quadrados menores indicam salas específicas: "Moe (1º Andar)" no canto superior esquerdo e "Acro (3º Andar)" no canto inferior direito. Um símbolo representando portas duplas está localizado na parede inferior da Casa de Hóspedes, abrindo para um caminho cinza que separa os dois edifícios.

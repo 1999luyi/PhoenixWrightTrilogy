@@ -1,0 +1,43 @@
+Uma folha branca de papel contendo texto digitado está pesadamente queimada ao longo de sua borda direita, destruindo porções da mensagem.
+
+O papel apresenta texto em serif preto sobre um fundo branco. Uma grande marca irregular de queimadura com bordas carbonizadas pretas e marrons consome o lado direito da página. Este dano corta as extremidades das linhas no parágrafo superior, enquanto o parágrafo inferior permanece legível.
+
+O texto na seção superior danificada diz:
+"Tenha cuidado"
+"Assim que a noite cair"
+"deve estar lá"
+A marca de queimadura obscurece qualquer texto que possa ter seguido essas frases.
+
+Abaixo de um espaço, a seção inferior diz:
+"Assim que você ouvir o sino de
+apagar as luzes, você deve canalizar
+o espírito dela. Deixe tudo por conta dela."
+===
+Uma folha branca de papel contendo texto digitado está severamente queimada ao longo do lado direito, obscurecendo as extremidades de várias sentenças.
+
+O papel exibe texto em serif preto sobre um fundo branco liso. Uma grande marca de queimadura irregular com bordas carbonizadas pretas e marrons domina a metade direita da página, particularmente na seção superior. Este dano corta o texto no primeiro parágrafo.
+
+O texto visível na seção superior danificada diz:
+"O nome dela é"
+"Ela é nossa toda"
+"O todo"
+
+A seção inferior do texto está intacta e diz:
+"Aqui está uma foto dela. Use-a
+quando você canalizar ela.
+Eu sei que você consegue."
+===
+Uma folha branca de papel contendo texto digitado está significativamente queimada ao longo da borda direita, apagando as extremidades das sentenças superiores enquanto deixa a instrução inferior intacta.
+
+O papel apresenta texto em serif preto sobre um fundo branco. Uma borda irregular carbonizada corre pelo lado direito, consumindo uma grande porção do parágrafo superior.
+
+O texto na seção superior danificada diz:
+"Uma vez que isso esteja"
+"queime o"
+"Além disso, faça"
+"contar a ninguém sobre esta carta."
+
+A seção inferior contém uma instrução estranha e específica:
+"Asse gravemente o Mestre nas
+chamas de Hades e traga nossa
+vingança à fruição."

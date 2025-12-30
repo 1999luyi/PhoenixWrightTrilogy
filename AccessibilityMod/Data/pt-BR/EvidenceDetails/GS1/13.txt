@@ -1,0 +1,7 @@
+Um mapa esquemático em vista superior retrata um layout de estacionamento designado como área "[A]". O mapa usa um estilo de alto contraste com piso bege, paredes e ícones de carros marrom escuro, e texto e linhas de estacionamento brancas.
+
+No canto superior esquerdo, um recinto retangular é rotulado "Sala de segurança". À sua direita, ao longo da parede superior, um pequeno nicho é rotulado "Telefone", situado ao lado de uma pequena parede divisória vertical. O centro desta seção é uma área de passagem aberta marcada com um grande "[A]" branco. Ao longo da parede inferior desta seção, quatro vagas de estacionamento verticais estão arranjadas lado a lado, cada uma ocupada por um ícone de carro voltado para cima.
+
+À direita da área central "[A]", uma coluna vertical de vagas horizontais está arranjada. A vaga superior contém um carro. Abaixo dela há duas vagas vazias marcadas com linhas horizontais. A vaga mais baixa desta coluna é preenchida com listras diagonais, indicando uma zona restrita ou proibida para estacionar.
+
+Uma linha vertical tracejada grossa separa esta coluna do meio da seção mais à direita do mapa. Esta seção direita apresenta uma fileira vertical de vagas horizontais. A vaga superior está vazia, enquanto as três vagas abaixo dela estão cada uma ocupada por um carro. No topo do mapa, parcialmente cortada pelo quadro, outra forma retangular escura é visível acima da coluna de estacionamento do meio.

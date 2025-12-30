@@ -1,0 +1,40 @@
+# Créditos da Equipe para GS1 Episódio 5
+# Cada linha (não-comentário) corresponde a uma imagem de crédito da equipe, na ordem de exibição.
+# Linhas vazias ficarão silenciosas. Linhas começando com # são comentários.
+# Formato: "Cargo: Nome" ou apenas o conteúdo textual da imagem.
+# Pressione F5 no jogo para recarregar após fazer alterações.
+#
+# Nota: As imagens de créditos da equipe mostram esses créditos visualmente.
+# Você pode precisar ajustar o texto abaixo para corresponder ao que aparece em seu jogo.
+# O número de entradas deve corresponder ao número de imagens de créditos da equipe (28 para Inglês).
+
+Planejamento/Roteiro/Diretor: Shu Takumi
+Planejamento: Takeshi Yamazaki
+Design: Kazuya Nuri
+
+Arte: Yasuaki Kishimoto, Tetsuya Enomoto
+Arte: Koujirou Ogiwara, Hirochika Nagaki
+Animação: Kouta Fukamachi, Takanori Ishikawa
+
+Gráficos: Shuichi Muramoto, Kiyoko Takeda, Yasuhiro Morita
+Gráficos: Kouji Aoki, Chie Nakajima, Toshihiko Yamamoto
+
+Programação: Fumiaki Sato
+Programação: Hitoshi Sakai, Shiro Mikata, Daisuke Kaneko
+
+Som: Akemi Kimura
+
+Localização: Ben Judd
+Localização: Brandon Gay, Kaori Funakoshi
+
+Tradução: Bowne Global Solutions
+Tradução: J. Patrick Riley, Yuli Kim, Steve Anderson
+Tradução: Yoko Muto, Alexander O. Smith, Philip Soldini
+
+Agradecimentos Especiais: Kimio Yamazoe, Ayatomo Tanimoto, Tatsuya Yoshikawa
+Agradecimentos Especiais: Keiji Kubori, Tomohiro Masuda, Setsuo Yamamoto
+Agradecimentos Especiais: Hideaki Katagiri, Miho Kobayashi
+Agradecimentos Especiais: Kentaro Ohira, Ryohei Koyama
+
+Produtor: Minae Matsukawa
+Produtor Executivo: Tatsuya Minami

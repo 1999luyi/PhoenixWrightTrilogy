@@ -1,0 +1,7 @@
+Um formulário bege de "Relatório de Item Perdido" contendo entradas manuscritas é exibido contra um fundo preto.
+
+O título do documento, "- Relatório de Item Perdido -", está impresso em uma fonte serifada em negrito no topo central. No canto superior direito, o campo "Data:" está preenchido com o texto manuscrito "21/2".
+
+Uma grade organiza os detalhes específicos. A primeira linha, rotulada "Data da perda", repete a data "21/2". A segunda linha, rotulada "Nome", contém o nome manuscrito "Benício Boaventura". A terceira linha, rotulada "ID", mostra o número "5" seguido por um caractere incompleto ou rabiscado que se assemelha a um "7" com uma barra horizontal.
+
+A linha rotulada "Item perdido" está vazia. A seção inferior do formulário é encabeçada "Relatório de status" e contém um grande espaço em branco sem escrita. Descolorações nubladas e tênues são visíveis na textura do papel ao longo do documento.

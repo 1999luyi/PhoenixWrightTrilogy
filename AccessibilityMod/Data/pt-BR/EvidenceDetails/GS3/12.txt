@@ -1,0 +1,7 @@
+Uma planta baixa vista de cima retrata uma cozinha e uma área de jantar, com um "X" vermelho em negrito marcando uma mesa específica na seção superior direita.
+
+O diagrama usa um fundo bege com linhas marrom escuro para representar paredes e móveis. Uma parede vertical divide o espaço em duas salas distintas. À esquerda, uma sala está claramente identificada como "Cozinha" em texto grande marrom escuro com contorno branco. Uma linha curva indica uma porta conectando a cozinha à sala adjacente, abrindo para dentro do espaço da cozinha.
+
+A área à direita parece ser uma seção de vagão-restaurante ou restaurante contendo quatro cabines. Essas cabines estão dispostas em duas fileiras, com duas cabines no topo e duas na parte inferior, separadas por um corredor central. Cada cabine consiste em uma mesa quadrada ladeada por dois assentos semicirculares um de frente para o outro. Paredes divisórias verticais separam as cabines dentro das fileiras.
+
+Um "X" vermelho brilhante com contorno branco está posicionado diretamente em cima da mesa na cabine superior direita. Esta marca a distingue das outras três disposições de assentos idênticas. À direita desta cabine marcada, uma estrutura de parede parcial sugere um corredor ou entrada na extremidade da sala.
