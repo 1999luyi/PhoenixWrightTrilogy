@@ -8,7 +8,7 @@
     <GamePath>C:\Program Files (x86)\Steam\steamapps\common\Phoenix Wright Ace Attorney Trilogy</GamePath>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\MelonAccessibilityLib\MelonAccessibilityLib.csproj" />
+    <PackageReference Include="MelonAccessibilityLib" Version="1.0.0" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MelonLoader">
